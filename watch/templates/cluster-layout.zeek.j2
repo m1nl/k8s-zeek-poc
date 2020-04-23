@@ -1,0 +1,7 @@
+# Automatically generated. Do not edit.
+redef Cluster::manager_is_logger = T;
+redef Cluster::nodes = {
+{%- for item in zeek_topology %}
+        ["{{ item.name }}"] = [$node_type=Cluster::{{ item.type }}, $ip={{ item.ip }}, $p={{ item.port }}/tcp{% if item.manager is defined %}, $manager="{{ item.manager }}"{% endif %}{% if item.interface is defined %}, $interface="{{ item.interface }}"{% endif %}],
+{%- endfor %}
+};

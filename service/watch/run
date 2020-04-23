@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd /watch
+
+exec 2>&1 /usr/bin/python ./watch.py

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zeek-manager
+  namespace: kube-system
+  labels:
+    k8s-app: zeek
+    zeek-node: manager
+spec:
+  serviceAccount: zeek-ids
+  restartPolicy: Always
+  nodeName: k8s-03
+  volumes:
+    - name: manager-spool
+      emptyDir: {}
+  containers:
+  - name: zeek
+    image: <registry>
+    imagePullPolicy: "Always"
+    volumeMounts:
+    - name: manager-spool
+      mountPath: /zeek/spool/manager
+    env:
+      - name: NODE_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+      - name: ZEEK_NODE_TYPE
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.labels['zeek-node']
+  - name: log-tail
+    image: busybox
+    args: ['/bin/sh', '-c', 'while true ; do tail -f /zeek/spool/manager/conn.log 2>/dev/null || sleep 5 ; done']
+    volumeMounts:
+    - name: manager-spool
+      mountPath: /zeek/spool/manager
