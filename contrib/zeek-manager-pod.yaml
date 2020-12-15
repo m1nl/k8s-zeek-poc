@@ -7,15 +7,15 @@ metadata:
     k8s-app: zeek
     zeek-node: manager
 spec:
-  serviceAccount: zeek-ids
+  serviceAccount: zeek-account
   restartPolicy: Always
-  nodeName: k8s-03
+  nodeName: <node>
   volumes:
     - name: manager-spool
       emptyDir: {}
   containers:
   - name: zeek
-    image: <registry>
+    image: m1nl/zeek:latest
     imagePullPolicy: "Always"
     volumeMounts:
     - name: manager-spool

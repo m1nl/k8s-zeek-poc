@@ -7,14 +7,14 @@ metadata:
     k8s-app: zeek
     zeek-node: worker
 spec:
-  serviceAccount: zeek-ids
+  serviceAccount: zeek-account
   restartPolicy: Always
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
   nodeName: k8s-03
   containers:
   - name: zeek
-    image: <registry>
+    image: m1nl/zeek:latest
     imagePullPolicy: "Always"
     env:
       - name: NODE_NAME

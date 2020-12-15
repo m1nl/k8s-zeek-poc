@@ -1,4 +1,4 @@
-ARG ZEEK_VERSION=3.1.1
+ARG ZEEK_VERSION=3.2.3
 ARG ZEEK_GPG_KEY=962FD2187ED5A1DD82FC478A33F15EAEF8CB8019
 
 FROM debian:buster-slim as builder
@@ -19,7 +19,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN set -eux; \
   apt-get -q --fix-missing update; \
-  apt-get -y --no-install-recommends install build-essential git gpg gpg-agent dirmngr curl bison flex gawk cmake swig libssl-dev libmaxminddb-dev libpcap-dev python-dev libcurl4-openssl-dev zlib1g-dev libbind-dev libjemalloc-dev libkrb5-dev ca-certificates; \
+  apt-get -y --no-install-recommends install build-essential git gpg gpg-agent dirmngr curl bison flex gawk cmake swig libssl-dev libmaxminddb-dev libpcap-dev python3-dev libcurl4-openssl-dev zlib1g-dev libbind-dev libjemalloc-dev libkrb5-dev ca-certificates; \
   apt-get clean; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /usr/share/man/*; \
@@ -55,7 +55,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN set -eux; \
   apt-get -q --fix-missing update; \
-  apt-get -y --no-install-recommends install bash vim procps runit curl bind9-host dnsutils net-tools iproute2 python2.7 python-pip python-setuptools python-wheel pipenv geoip-database ca-certificates libpcap0.8 libssl1.1 libmaxminddb0 zlib1g libjemalloc2 libkrb5-3; \
+  apt-get -y --no-install-recommends install bash vim procps runit curl bind9-host dnsutils net-tools iproute2 python3 python3-dev python3-pip python3-setuptools python3-wheel pipenv geoip-database ca-certificates libpcap0.8 libssl1.1 libmaxminddb0 zlib1g libjemalloc2 libkrb5-3; \
   apt-get clean; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /usr/share/man/*; \
@@ -65,7 +65,9 @@ RUN set -eux; \
   find /var/log -type f -regex '.*\.\([0-9]\|gz\)$' -print0 | xargs -0 rm -f; \
   find /var/log -type f -print0 | xargs -0 truncate -s 0
 
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+RUN set -eux; \
+  update-alternatives --install /usr/bin/python python /usr/bin/python3 1; \
+  update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
 COPY --from=builder /usr/local/zeek-${ZEEK_VERSION} /usr/local/zeek-${ZEEK_VERSION}
 

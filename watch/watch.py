@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import socket
 import hashlib
@@ -57,7 +57,7 @@ def monitor():
       if key in monitored_pods:
         del monitored_pods[key]
       if key in zeek_pods:
-        del monitored_pods[key]
+        del zeek_pods[key]
 
     zeek_topology = []
     zeek_workers = {}
@@ -90,7 +90,7 @@ def monitor():
       if node_name in zeek_workers:
         zeek_worker_ip = zeek_workers[node_name].status.pod_ip   
         zeek_node_name = 'worker-%s-%s' % (pod_namespace, pod_name)
-        interface_hash = hashlib.sha1('%s.%s' % (pod_namespace, pod_name))
+        interface_hash = hashlib.sha1(('%s.%s' % (pod_namespace, pod_name)).encode('utf-8'))
         zeek_interface = '%s%s' % (interface_prefix, interface_hash.hexdigest()[:11])
         zeek_topology.append({ 'name': zeek_node_name, 'type': 'WORKER', 'ip': zeek_worker_ip, 'manager': 'manager', 'interface': zeek_interface })
 
@@ -174,7 +174,7 @@ def sync_zeek():
   
       zeek_node_name = 'worker-%s-%s' % (pod_namespace, pod_name)
   
-      interface_hash = hashlib.sha1('%s.%s' % (pod_namespace, pod_name))
+      interface_hash = hashlib.sha1(('%s.%s' % (pod_namespace, pod_name)).encode('utf-8'))
       zeek_interface = '%s%s' % (interface_prefix, interface_hash.hexdigest()[:11])
   
       os.mkdir(path)
